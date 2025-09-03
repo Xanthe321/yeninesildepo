@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
@@ -15,7 +16,7 @@ export default function Storage() {
             <Card className="rounded-xl shadow-lg transition-transform transform hover:scale-105">
               <CardHeader>
                 <div className="relative h-48 w-full rounded-t-xl overflow-hidden">
-                  <img
+                  <Image
                     src="https://placehold.co/400x300/E2E8F0/94A3B8?text=Küçük+Depo"
                     alt="Küçük depo görseli"
                     className="w-full h-full object-cover"
@@ -34,7 +35,7 @@ export default function Storage() {
             <Card className="rounded-xl shadow-lg transition-transform transform hover:scale-105">
               <CardHeader>
                 <div className="relative h-48 w-full rounded-t-xl overflow-hidden">
-                  <img
+                  <Image
                     src="https://placehold.co/400x300/E2E8F0/94A3B8?text=Orta+Depo"
                     alt="Orta boy depo görseli"
                     className="w-full h-full object-cover"
@@ -53,7 +54,7 @@ export default function Storage() {
             <Card className="rounded-xl shadow-lg transition-transform transform hover:scale-105">
               <CardHeader>
                 <div className="relative h-48 w-full rounded-t-xl overflow-hidden">
-                  <img
+                  <Image
                     src="https://placehold.co/400x300/E2E8F0/94A3B8?text=Büyük+Depo"
                     alt="Büyük boy depo görseli"
                     className="w-full h-full object-cover"

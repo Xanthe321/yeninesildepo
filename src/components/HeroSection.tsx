@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Button } from "./ui/button";
 
 export default function HeroSection() {
@@ -26,7 +27,7 @@ export default function HeroSection() {
             </div>
           </div>
           <div className="relative h-72 sm:h-96 w-full rounded-2xl overflow-hidden shadow-2xl">
-            <img
+            <Image
               src="https://placehold.co/800x600/E2E8F0/94A3B8?text=Modern+Depo+İçi"
               alt="Modern depo içi görseli"
               className="w-full h-full object-cover"

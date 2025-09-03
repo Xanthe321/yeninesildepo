@@ -9,16 +9,6 @@ export default function CTA() {
 
 const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
-  // const handleInputChange = (e: any) => {
-  //   const { name, value } = e.target;
-  //   setFormData(prevState => ({ ...prevState, [name]: value }));
-  // };
-
-  // const handleSubmit = (e: any) => {
-  //   e.preventDefault();
-  //   console.log('Form verileri:', formData);
-  //   // Burada form verilerini gönderme işlemi yapılabilir
-  // };
 
   return (
     <section className="bg-blue-600 text-white py-20 sm:py-24">
