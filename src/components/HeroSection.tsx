@@ -28,7 +28,9 @@ export default function HeroSection() {
           </div>
           <div className="relative h-72 sm:h-96 w-full rounded-2xl overflow-hidden shadow-2xl">
             <Image
-              src="https://placehold.co/800x600/E2E8F0/94A3B8?text=Modern+Depo+İçi"
+              width={800}
+              height={800}
+              src="/"
               alt="Modern depo içi görseli"
               className="w-full h-full object-cover"
             />

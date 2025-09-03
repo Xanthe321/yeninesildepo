@@ -17,7 +17,9 @@ export default function Storage() {
               <CardHeader>
                 <div className="relative h-48 w-full rounded-t-xl overflow-hidden">
                   <Image
-                    src="https://placehold.co/400x300/E2E8F0/94A3B8?text=Küçük+Depo"
+                    width={800}
+                    height={800}
+                    src="/"
                     alt="Küçük depo görseli"
                     className="w-full h-full object-cover"
                   />
@@ -36,7 +38,9 @@ export default function Storage() {
               <CardHeader>
                 <div className="relative h-48 w-full rounded-t-xl overflow-hidden">
                   <Image
-                    src="https://placehold.co/400x300/E2E8F0/94A3B8?text=Orta+Depo"
+                    width={800}
+                    height={800}
+                    src="/"
                     alt="Orta boy depo görseli"
                     className="w-full h-full object-cover"
                   />
@@ -55,7 +59,9 @@ export default function Storage() {
               <CardHeader>
                 <div className="relative h-48 w-full rounded-t-xl overflow-hidden">
                   <Image
-                    src="https://placehold.co/400x300/E2E8F0/94A3B8?text=Büyük+Depo"
+                    width={800}
+                    height={800}
+                    src="/"
                     alt="Büyük boy depo görseli"
                     className="w-full h-full object-cover"
                   />
