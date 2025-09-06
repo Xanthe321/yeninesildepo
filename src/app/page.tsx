@@ -13,7 +13,6 @@ export default function Home() {
       <Storage />
       <HowToWork />
       <CTA />
-      <Footer />
     </div>
   );
 }
