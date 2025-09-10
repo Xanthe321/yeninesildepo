@@ -98,7 +98,7 @@ export default function Depo({ params }: Props) {
               {depoDetay.images.map((image, index) => (
                 <div 
                   key={index}
-                  className={`rounded-xl overflow-hidden cursor-pointer transition-transform transform hover:scale-105 ${0 === 0 ? 'ring-4 ring-blue-600 ring-offset-2' : ''}`}
+                  className={`rounded-xl overflow-hidden cursor-pointer transition-transform transform hover:scale-105 ${0 === 0 ? 'ring-4 ring-blue-600 ring-offset-2 text-2' : ''}`}
                  
                 >
                   <img 
