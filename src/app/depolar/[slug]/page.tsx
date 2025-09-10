@@ -42,19 +42,19 @@ export default function Depo({ params }: Props) {
 
   if (!slug) return notFound();
 
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  // const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const handlePrev = () => {
-    setCurrentImageIndex((prevIndex) => 
-      prevIndex === 0 ? depoDetay.images.length - 1 : prevIndex - 1
-    );
-  };
+  // const handlePrev = () => {
+  //   setCurrentImageIndex((prevIndex) => 
+  //     prevIndex === 0 ? depoDetay.images.length - 1 : prevIndex - 1
+  //   );
+  // };
 
-  const handleNext = () => {
-    setCurrentImageIndex((prevIndex) => 
-      prevIndex === depoDetay.images.length - 1 ? 0 : prevIndex + 1
-    );
-  };
+  // const handleNext = () => {
+  //   setCurrentImageIndex((prevIndex) => 
+  //     prevIndex === depoDetay.images.length - 1 ? 0 : prevIndex + 1
+  //   );
+  // };
 
   return (
     <div className="bg-white text-gray-900 font-sans leading-relaxed antialiased min-h-screen">
@@ -76,18 +76,17 @@ export default function Depo({ params }: Props) {
           <div className="lg:col-span-1">
             <div className="relative mb-8 rounded-xl overflow-hidden shadow-lg h-96">
               <img 
-                src={depoDetay.images[currentImageIndex]} 
+                src={depoDetay.images[0]} 
                 alt={depoDetay.title} 
                 className="w-full h-full object-cover transition-opacity duration-500 ease-in-out" 
               />
               <button 
-                onClick={handlePrev} 
                 className="absolute top-1/2 left-4 -translate-y-1/2 bg-white/50 hover:bg-white/70 text-gray-800 p-2 rounded-full transition-colors z-10"
               >
                 <ChevronLeft className="h-6 w-6" />
               </button>
               <button 
-                onClick={handleNext} 
+              
                 className="absolute top-1/2 right-4 -translate-y-1/2 bg-white/50 hover:bg-white/70 text-gray-800 p-2 rounded-full transition-colors z-10"
               >
                 <ChevronRight className="h-6 w-6" />
@@ -99,8 +98,8 @@ export default function Depo({ params }: Props) {
               {depoDetay.images.map((image, index) => (
                 <div 
                   key={index}
-                  className={`rounded-xl overflow-hidden cursor-pointer transition-transform transform hover:scale-105 ${currentImageIndex === index ? 'ring-4 ring-blue-600 ring-offset-2' : ''}`}
-                  onClick={() => setCurrentImageIndex(index)}
+                  className={`rounded-xl overflow-hidden cursor-pointer transition-transform transform hover:scale-105 ${0 === 0 ? 'ring-4 ring-blue-600 ring-offset-2' : ''}`}
+                 
                 >
                   <img 
                     src={image} 
