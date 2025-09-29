@@ -18,10 +18,10 @@ export default function HeroSection() {
               Fazla eşyalarınız için aradığınız güvenli, temiz ve uygun fiyatlı depo alanları tek tıkla kapınızda. İhtiyaçlarınıza özel esnek çözümlerle hayatınızı kolaylaştırın.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105">
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105 cursor-pointer">
                 Depoları Keşfet
               </Button>
-              <Button size="lg" variant="outline" className="text-blue-600 hover:bg-blue-100 border-2 border-blue-600 font-semibold py-3 px-8 rounded-full transition-colors">
+              <Button size="lg" variant="outline" className="text-blue-600 hover:bg-blue-100 border-2 border-blue-600 font-semibold py-3 px-8 rounded-full transition-colors cursor-pointer">
                 Nasıl Çalışır?
               </Button>
             </div>
@@ -30,7 +30,7 @@ export default function HeroSection() {
             <Image
               width={800}
               height={800}
-              src="/"
+              src="/hero-section-image.jpg"
               alt="Modern depo içi görseli"
               className="w-full h-full object-cover"
             />

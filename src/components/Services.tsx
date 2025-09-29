@@ -38,7 +38,7 @@ export default function Services() {
           </div>
           
           {/* <div className="mt-16 text-center">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105 cursor-pointer">
               Hizmetlerimiz Hakkında Daha Fazla Bilgi Edinin
             </Button>
           </div> */}

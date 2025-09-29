@@ -43,7 +43,7 @@ const [formData, setFormData] = useState({ name: '', email: '', message: '' });
                 // onChange={handleInputChange}
                 className="bg-white text-gray-900 rounded-lg py-3 px-4 focus:ring-2 focus:ring-blue-400"
               />
-              <Button type="submit" className="w-full bg-white text-blue-600 font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-100 transition-colors">
+              <Button type="submit" className="w-full bg-white text-blue-600 font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-100 transition-colors cursor-pointer">
                 Fiyat Teklifi Al
               </Button>
             </form>

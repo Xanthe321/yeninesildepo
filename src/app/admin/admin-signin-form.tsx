@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { adminLogin } from "./actions"
 
 export function AdminSigninForm({
   className,
@@ -29,8 +30,9 @@ export function AdminSigninForm({
               <div className="grid gap-3">
                 <Label htmlFor="email">Kullanıcı Adı</Label>
                 <Input
-                  id="admin"
-                  type="text"
+                  id="adminEmail"
+                  name="adminEmail"
+                  type="email"
                   placeholder="m@example.com"
                   required
                 />
@@ -45,10 +47,10 @@ export function AdminSigninForm({
                     Şifrenizi mi unuttunuz?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" name="password" type="password" required />
               </div>
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
+                <Button formAction={adminLogin} type="submit" className="w-full bg-blue-600 hover:bg-blue-700 cursor-pointer">
                   Giriş Yap
                 </Button>
               </div>
