@@ -8,10 +8,10 @@ export default function Home() {
   return (
     <div className="bg-white text-gray-900 font-sans leading-relaxed antialiased">
       <HeroSection />
-      {/* <Services />
-      <Storage />
+      <Services />
+      {/* <Storage /> */}
       <HowToWork />
-      <CTA /> */}
+      <CTA />
     </div>
   );
 }
