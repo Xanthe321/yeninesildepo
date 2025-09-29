@@ -9,7 +9,7 @@ export default function Home() {
     <div className="bg-white text-gray-900 font-sans leading-relaxed antialiased">
       <HeroSection />
       <Services />
-      {/* <Storage /> */}
+      <Storage />
       <HowToWork />
       <CTA />
     </div>

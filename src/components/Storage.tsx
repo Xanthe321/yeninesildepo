@@ -1,11 +1,44 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { getLatestWarehouses } from "@/lib/warehouse-actions";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
-export default async function Storage() {
-    const warehouses = await getLatestWarehouses();
+interface Warehouse {
+  id: string
+  title: string
+  location: string
+  size: string
+  price: number
+  image_url?: string
+  description?: string
+  created_at: string
+}
+
+export default function Storage() {
+    const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch warehouses from API
+    useEffect(() => {
+        const fetchWarehouses = async () => {
+            try {
+                const response = await fetch('/api/warehouses/latest');
+                if (response.ok) {
+                    const data = await response.json();
+                    setWarehouses(data.warehouses || []);
+                }
+            } catch (error) {
+                console.error('Error fetching warehouses:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchWarehouses();
+    }, []);
 
     // Fallback data if no warehouses in database
     const defaultWarehouses = [
@@ -35,7 +68,7 @@ export default async function Storage() {
         }
     ];
 
-    const displayWarehouses = warehouses.length > 0 ? warehouses.slice(0, 3) : defaultWarehouses;
+    const displayWarehouses = loading ? defaultWarehouses : (warehouses.length > 0 ? warehouses.slice(0, 3) : defaultWarehouses);
 
     return (
 			<section className="py-20 sm:py-24 bg-gray-50">
