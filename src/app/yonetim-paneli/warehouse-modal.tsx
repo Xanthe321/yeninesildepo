@@ -91,6 +91,8 @@ export default function WarehouseModal() {
         formData.append(`images`, image);
       });
 
+      console.log(selectedImages)
+
       const result = await addWarehouse(formData);
 
       if (result.success) {

@@ -124,20 +124,8 @@ export async function addWarehouse(formData: FormData): Promise<ActionResult> {
     // Extract image files
     const imageFiles = formData.getAll('images') as File[]
 
-    // TODO: In a real implementation, upload images to Supabase Storage
-    // For now, we'll store placeholder image URLs
-    const imageUrls: string[] = []
-
-    if (imageFiles.length > 0) {
-      // Simulate image upload - in production, upload to Supabase Storage
-      imageFiles.forEach((file, index) => {
-        // Placeholder URL - replace with actual uploaded image URL
-        imageUrls.push(`https://placehold.co/600x400/E2E8F0/94A3B8?text=Depo+Görseli+${index + 1}`)
-      })
-    }
-
-    // Insert the new warehouse
-    const { error: insertError } = await supabase
+    // Insert the new warehouse first to get the ID
+    const { data: warehouseData, error: insertError } = await supabase
       .from('warehouses')
       .insert([{
         title,
@@ -146,11 +134,78 @@ export async function addWarehouse(formData: FormData): Promise<ActionResult> {
         price,
         description,
       }])
+      .select('id')
+      .single()
 
-    if (insertError) {
+    if (insertError || !warehouseData) {
       return {
         success: false,
         message: 'Depo eklenirken bir hata oluştu'
+      }
+    }
+
+    const warehouseId = warehouseData.id
+
+    // Upload images to Supabase Storage if any
+    if (imageFiles.length > 0) {
+      const uploadedUrls: string[] = []
+
+      for (let i = 0; i < imageFiles.length; i++) {
+        const file = imageFiles[i]
+
+        // Skip if not a valid image file
+        if (!file.type.startsWith('image/')) {
+          continue
+        }
+
+        // Generate unique filename
+        const fileExt = file.name.split('.').pop()
+        const fileName = `${warehouseId}_${Date.now()}_${i + 1}.${fileExt}`
+        const filePath = `warehoueses/${fileName}`
+
+        try {
+          // Upload file to Supabase Storage
+          const { data, error } = await supabase.storage
+            .from('warehoueses_images')
+            .upload(filePath, file, {
+              cacheControl: '3600',
+              upsert: false
+            })
+
+            console.log(data)
+
+          if (error) {
+            console.error('Error uploading image:', error)
+            continue
+          }
+
+          // Get public URL for the uploaded image
+          const { data: { publicUrl } } = supabase.storage
+            .from('warehouses_images')
+            .getPublicUrl(filePath)
+
+          uploadedUrls.push(publicUrl)
+        } catch (error) {
+          console.error('Error uploading image:', error)
+          continue
+        }
+      }
+
+      // Save image URLs to warehouses_images table
+      if (uploadedUrls.length > 0) {
+        const imageRecords = uploadedUrls.map((imageUrl, index) => ({
+          warehouse_id: warehouseId,
+          image_path: imageUrl,
+        }))
+
+        const { error: imageInsertError } = await supabase
+          .from('warehouses_images')
+          .insert(imageRecords)
+
+        if (imageInsertError) {
+          console.error('Error inserting image records:', imageInsertError)
+          // Continue without failing the whole operation
+        }
       }
     }
 
