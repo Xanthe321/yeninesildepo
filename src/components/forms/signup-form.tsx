@@ -12,10 +12,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { signUp } from "@/app/uye-ol/action"
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { useFormState } from "react-dom"
-import { createClient } from "../../../utils/supabase/client"
 
 const initialState = {
   success: false,
@@ -33,18 +30,7 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const router = useRouter()
   const [state, formAction] = useFormState(signUpAction, initialState)
-
-  useEffect(() => {
-    if (state?.success && state?.redirectTo) {
-      // Manually trigger client-side auth refresh after server action
-      const supabase = createClient()
-      supabase.auth.getSession().then(() => {
-        router.push(state.redirectTo!)
-      })
-    }
-  }, [state, router])
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

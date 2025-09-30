@@ -13,9 +13,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { login } from "@/app/giris-yap/action"
 import { useFormState } from "react-dom"
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { createClient } from "../../../utils/supabase/client"
 
 const initialState = {
   success: false,
@@ -33,18 +30,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const router = useRouter()
   const [state, formAction] = useFormState(loginAction, initialState)
-
-  useEffect(() => {
-    if (state?.success && state?.redirectTo) {
-      // Manually trigger client-side auth refresh after server action
-      const supabase = createClient()
-      supabase.auth.getSession().then(() => {
-        router.push(state.redirectTo!)
-      })
-    }
-  }, [state, router])
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

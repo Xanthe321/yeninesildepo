@@ -11,42 +11,30 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useAuth } from "@/hooks/use-auth";
 import { User, Mail, Phone, MapPin, Calendar, Edit, Save, X } from "lucide-react";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-export default function ProfileForm() {
-  const { user, loading } = useAuth();
-  const router = useRouter();
+interface UserData {
+  id: string;
+  email: string;
+  role?: string;
+}
+
+interface ProfileFormProps {
+  user: UserData | null;
+}
+
+export default function ProfileForm({ user }: ProfileFormProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [profileData, setProfileData] = useState({
-    fullName: '',
-    email: '',
+    fullName: user?.email?.split('@')[0] || 'Kullanıcı',
+    email: user?.email || '',
     phone: '',
     address: '',
     bio: '',
-    joinDate: ''
+    joinDate: new Date().toLocaleDateString('tr-TR')
   });
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/giris-yap');
-      return;
-    }
-
-    if (user) {
-      setProfileData({
-        fullName: user.email?.split('@')[0] || 'Kullanıcı',
-        email: user.email || '',
-        phone: '',
-        address: '',
-        bio: '',
-        joinDate: new Date().toLocaleDateString('tr-TR')
-      });
-    }
-  }, [user, loading, router]);
 
   const handleInputChange = (field: string, value: string) => {
     setProfileData(prev => ({ ...prev, [field]: value }));
@@ -65,16 +53,12 @@ export default function ProfileForm() {
     // Reset data if needed
   };
 
-  if (loading) {
+  if (!user) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="w-8 h-8 animate-spin border-4 border-blue-600 border-t-transparent rounded-full"></div>
+        <p className="text-gray-500">Kullanıcı bilgileri bulunamadı.</p>
       </div>
     );
-  }
-
-  if (!user) {
-    return null;
   }
 
   return (

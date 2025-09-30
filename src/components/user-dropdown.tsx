@@ -17,7 +17,6 @@ import { createClient } from "../../utils/supabase/client";
 
 interface UserDropdownProps {
   user: {
-    id: string;
     email: string;
     role?: string;
   };
@@ -59,12 +58,14 @@ export default function UserDropdown({ user }: UserDropdownProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem asChild>
-          <Link href="/profil" className="cursor-pointer flex items-center">
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Profil</span>
-          </Link>
-        </DropdownMenuItem>
+        {user.role === 'user' && (
+          <DropdownMenuItem asChild>
+            <Link href="/profil" className="cursor-pointer flex items-center">
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Profil</span>
+            </Link>
+          </DropdownMenuItem>
+        )}
 
         {user.role === 'admin' && (
           <DropdownMenuItem asChild>

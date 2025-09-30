@@ -28,7 +28,7 @@ export function AdminSigninForm({
           <form>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
-                <Label htmlFor="email">Kullanıcı Adı</Label>
+                <Label htmlFor="adminEmail">Kullanıcı Adı</Label>
                 <Input
                   id="adminEmail"
                   name="adminEmail"
