@@ -32,7 +32,7 @@ export async function getWareHouses() {
     redirect('/error')
   }
 
-  // Fetch warehouses
+  // First, fetch warehouses
   const { data: warehouses, error: warehousesError } = await supabase
     .from('warehouses')
     .select('*')
@@ -42,7 +42,33 @@ export async function getWareHouses() {
     throw new Error('Failed to fetch warehouses')
   }
 
-  return warehouses
+  if (!warehouses || warehouses.length === 0) {
+    return []
+  }
+
+  // Then, fetch images for all warehouses
+  const warehouseIds = warehouses.map(w => w.id)
+  const { data: images, error: imagesError } = await supabase
+    .from('warehouses_images')
+    .select('warehouse_id, image_path, id')
+    .in('warehouse_id', warehouseIds)
+
+  if (imagesError) {
+    console.error('Error fetching warehouse images:', imagesError)
+    // Return warehouses without images if image fetch fails
+    return warehouses
+  }
+
+  // Combine warehouses with their images
+  const warehousesWithImages = warehouses.map(warehouse => {
+    const warehouseImages = images?.filter(img => img.warehouse_id === warehouse.id) || []
+    return {
+      ...warehouse,
+      warehouses_images: warehouseImages
+    }
+  })
+
+  return warehousesWithImages
 }
 
 export async function deleteWarehouse(warehouseId: string) {
@@ -158,9 +184,11 @@ export async function addWarehouse(formData: FormData): Promise<ActionResult> {
           continue
         }
 
-        // Generate unique filename
+        // Generate unique filename with random component
         const fileExt = file.name.split('.').pop()
-        const fileName = `${warehouseId}_${Date.now()}_${i + 1}.${fileExt}`
+        const timestamp = Date.now()
+        const random = Math.random().toString(36).substring(2, 15)
+        const fileName = `${warehouseId}_${timestamp}_${random}_${i + 1}.${fileExt}`
         const filePath = `warehoueses/${fileName}`
 
         try {
@@ -172,21 +200,17 @@ export async function addWarehouse(formData: FormData): Promise<ActionResult> {
               upsert: false
             })
 
-            console.log(data)
-
           if (error) {
-            console.error('Error uploading image:', error)
             continue
           }
 
           // Get public URL for the uploaded image
           const { data: { publicUrl } } = supabase.storage
-            .from('warehouses_images')
+            .from('warehoueses_images')
             .getPublicUrl(filePath)
 
           uploadedUrls.push(publicUrl)
         } catch (error) {
-          console.error('Error uploading image:', error)
           continue
         }
       }
@@ -203,8 +227,10 @@ export async function addWarehouse(formData: FormData): Promise<ActionResult> {
           .insert(imageRecords)
 
         if (imageInsertError) {
-          console.error('Error inserting image records:', imageInsertError)
-          // Continue without failing the whole operation
+          return {
+            success: false,
+            message: 'Depo eklendi ancak görseller kaydedilemedi'
+          }
         }
       }
     }

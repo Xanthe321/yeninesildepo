@@ -7,15 +7,21 @@ import { ChevronLeft, ChevronRight, MapPin, Package, Star } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
 
+interface WarehouseImage {
+  id: string;
+  warehouse_id: string;
+  image_path: string;
+}
+
 interface Warehouse {
   id: string;
   title: string;
   description?: string;
   location: string;
-  measurements: string;
+  size: string;
   price: number;
   rating?: number;
-  images?: string[];
+  warehouses_images?: WarehouseImage[];
   features?: string[];
 }
 
@@ -42,7 +48,9 @@ export default function WarehouseDetail({ warehouse }: WarehouseDetailProps) {
     "Esnek Kiralama Süreleri"
   ];
 
-  const images = warehouse.images && warehouse.images.length > 0 ? warehouse.images : defaultImages;
+  const images = warehouse.warehouses_images && warehouse.warehouses_images.length > 0
+    ? warehouse.warehouses_images.map(img => img.image_path)
+    : defaultImages;
   const features = warehouse.features && warehouse.features.length > 0 ? warehouse.features : defaultFeatures;
 
   const handlePrev = () => {
@@ -86,6 +94,7 @@ export default function WarehouseDetail({ warehouse }: WarehouseDetailProps) {
                 width={800}
                 height={600}
                 className="w-full h-full object-cover transition-opacity duration-500 ease-in-out"
+                unoptimized={warehouse.warehouses_images && warehouse.warehouses_images.length > 0}
               />
               <button
                 onClick={handlePrev}
@@ -117,6 +126,7 @@ export default function WarehouseDetail({ warehouse }: WarehouseDetailProps) {
                     width={200}
                     height={300}
                     className="w-full object-cover aspect-[2/3]"
+                    unoptimized={warehouse.warehouses_images && warehouse.warehouses_images.length > 0}
                   />
                 </div>
               ))}
@@ -155,7 +165,7 @@ export default function WarehouseDetail({ warehouse }: WarehouseDetailProps) {
                     </div>
                   )}
                   <div className="flex items-center text-sm text-gray-500">
-                    <span>{warehouse.measurements}</span>
+                    <span>{warehouse.size}</span>
                   </div>
                 </div>
                 <Button className="w-full bg-blue-600 hover:bg-blue-700">Hemen Kirala</Button>

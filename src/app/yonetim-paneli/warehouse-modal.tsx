@@ -86,21 +86,20 @@ export default function WarehouseModal() {
         formData.append('description', data.description);
       }
 
-      // Add images to form data
       selectedImages.forEach((image) => {
         formData.append(`images`, image);
       });
-
-      console.log(selectedImages)
 
       const result = await addWarehouse(formData);
 
       if (result.success) {
         setServerSuccess(result.message || 'Depo başarıyla eklendi');
-        setTimeout(() => {
-          setOpen(false);
-          resetForm();
-        }, 1500);
+        setOpen(false);
+        resetForm();
+        // setTimeout(() => {
+          
+        //   
+        // }, 1500);
       } else {
         setServerError(result.message || 'Depo eklenirken bir hata oluştu');
       }

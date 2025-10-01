@@ -6,6 +6,12 @@ import { MapPin, Edit, Trash2, PlusCircle, CheckCircle, XCircle } from "lucide-r
 import { deleteWarehouse } from './actions';
 import Image from "next/image";
 
+interface WarehouseImage {
+  id: string;
+  warehouse_id: string;
+  image_path: string;
+}
+
 interface Warehouse {
   id: string;
   title: string;
@@ -13,6 +19,7 @@ interface Warehouse {
   size?: string;
   price: number;
   is_rented: boolean;
+  warehouses_images?: WarehouseImage[];
 }
 
 interface WarehouseListProps {
@@ -35,7 +42,16 @@ export default function WarehouseList({ warehouses }: WarehouseListProps) {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {warehouses.map(warehouse => (
         <Card key={warehouse.id} className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 pt-0 pb-6">
-          {true && true && (
+          {warehouse.warehouses_images && warehouse.warehouses_images.length > 0 ? (
+            <Image
+              src={warehouse.warehouses_images[0].image_path}
+              alt={warehouse.title}
+              width={1200}
+              height={800}
+              className="w-full h-48 object-cover"
+              
+            />
+          ) : (
             <Image
               src="https://placehold.co/1200x800/E2E8F0/94A3B8?text=Ana+Depo+Görseli"
               alt={warehouse.title}

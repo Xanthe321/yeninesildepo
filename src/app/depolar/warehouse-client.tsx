@@ -8,6 +8,12 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
+interface WarehouseImage {
+  id: string;
+  warehouse_id: string;
+  image_path: string;
+}
+
 interface Warehouse {
   id: string;
   title: string;
@@ -16,7 +22,7 @@ interface Warehouse {
   size?: string;
   price: number;
   rating?: number;
-  images?: string[];
+  warehouses_images?: WarehouseImage[];
 }
 
 interface WarehouseClientProps {
@@ -59,14 +65,15 @@ export default function WarehouseClient({ warehouses }: WarehouseClientProps) {
                 <CardHeader className="p-0 relative">
                   <div className="relative h-60 w-full rounded-t-xl overflow-hidden">
                     <Image
-                      src={warehouse.images && warehouse.images.length > 0
-                        ? warehouse.images[0]
+                      src={warehouse.warehouses_images && warehouse.warehouses_images.length > 0
+                        ? warehouse.warehouses_images[0].image_path
                         : "https://placehold.co/600x400/E2E8F0/94A3B8?text=Depo+Görseli"
                       }
                       alt={warehouse.title}
                       width={600}
                       height={400}
                       className="w-full h-full object-cover"
+                      unoptimized={warehouse.warehouses_images && warehouse.warehouses_images.length > 0}
                     />
                     <div className="absolute top-4 right-4">
                       <Heart
