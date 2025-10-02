@@ -36,8 +36,8 @@ async function getUser() {
 
     return {
       id: user.id,
-      email: user.email,
-      role: userRole?.role 
+      email: user.email || '',
+      role: userRole?.role
     };
   } catch (error) {
     return null;
