@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Edit, Trash2, PlusCircle, CheckCircle, XCircle } from "lucide-react";
 import { deleteWarehouse } from './actions';
 import Image from "next/image";
+import Link from "next/link";
 
 interface WarehouseImage {
   id: string;
@@ -82,10 +83,12 @@ export default function WarehouseList({ warehouses }: WarehouseListProps) {
             </div>
           </CardHeader>
           <CardContent className="p-4 flex justify-end space-x-2 border-t">
-            <Button variant="outline" size="sm" className="cursor-pointer">
-              <Edit className="h-4 w-4 mr-1" />
-              Düzenle
-            </Button>
+            <Link href={`/yonetim-paneli/edit/${warehouse.id}`}>
+              <Button variant="outline" size="sm" className="cursor-pointer">
+                <Edit className="h-4 w-4 mr-1" />
+                Düzenle
+              </Button>
+            </Link>
             <Button variant="destructive" size="sm" onClick={() => handleDelete(warehouse.id)} className="cursor-pointer">
               <Trash2 className="h-4 w-4 mr-1" />
               Sil

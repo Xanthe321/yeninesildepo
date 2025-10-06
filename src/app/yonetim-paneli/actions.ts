@@ -106,6 +106,239 @@ export async function deleteWarehouse(warehouseId: string) {
   return { success: true }
 }
 
+export async function getWarehouseById(warehouseId: string) {
+  const supabase = await createClient()
+
+  // Check if user is authenticated
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+  if (authError || !user) {
+    redirect('/error')
+  }
+
+  // Check if user has admin role
+  const { data: userRole, error: userRoleError } = await supabase
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', user.id)
+    .single()
+
+  if (userRoleError || !userRole || userRole.role !== 'admin') {
+    redirect('/error')
+  }
+
+  // Fetch warehouse
+  const { data: warehouse, error: warehouseError } = await supabase
+    .from('warehouses')
+    .select('*')
+    .eq('id', warehouseId)
+    .single()
+
+  if (warehouseError || !warehouse) {
+    return null
+  }
+
+  // Fetch images for the warehouse
+  const { data: images, error: imagesError } = await supabase
+    .from('warehouses_images')
+    .select('warehouse_id, image_path, id')
+    .eq('warehouse_id', warehouseId)
+
+  if (imagesError) {
+    console.error('Error fetching warehouse images:', imagesError)
+    // Return warehouse without images if image fetch fails
+    return warehouse
+  }
+
+  // Combine warehouse with its images
+  return {
+    ...warehouse,
+    warehouses_images: images || []
+  }
+}
+
+export async function updateWarehouse(formData: FormData): Promise<ActionResult> {
+  try {
+    const supabase = await createClient()
+
+    // Check if user is authenticated
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+    if (authError || !user) {
+      return {
+        success: false,
+        message: 'Oturum açmanız gerekiyor'
+      }
+    }
+
+    // Check if user has admin role
+    const { data: userRole, error: userRoleError } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+      .single()
+
+    if (userRoleError || !userRole || userRole.role !== 'admin') {
+      return {
+        success: false,
+        message: 'Bu işlem için yetkiniz bulunmuyor'
+      }
+    }
+
+    const warehouseId = formData.get('id') as string
+    const title = formData.get('title') as string
+    const location = formData.get('location') as string
+    const size = formData.get('size') as string
+    const price = parseFloat(formData.get('price') as string)
+    const description = formData.get('description') as string
+
+    // Validate input with Zod
+    const validation = warehouseSchema.safeParse({
+      title,
+      location,
+      size,
+      price,
+      description
+    })
+
+    if (!validation.success) {
+      return {
+        success: false,
+        message: 'Girilen bilgilerde hata var',
+        validationErrors: validation.error.flatten().fieldErrors as Record<string, string>
+      }
+    }
+
+    // Update the warehouse
+    const { error: updateError } = await supabase
+      .from('warehouses')
+      .update({
+        title,
+        location,
+        size,
+        price,
+        description,
+      })
+      .eq('id', warehouseId)
+
+    if (updateError) {
+      return {
+        success: false,
+        message: 'Depo güncellenirken bir hata oluştu'
+      }
+    }
+
+    // Handle existing images
+    const existingImages = formData.getAll('existingImages') as string[]
+    const existingImageIds = existingImages.map(img => JSON.parse(img).id)
+
+    // Delete images that were removed
+    if (existingImageIds.length > 0) {
+      // First get all current images for this warehouse
+      const { data: currentImages } = await supabase
+        .from('warehouses_images')
+        .select('id')
+        .eq('warehouse_id', warehouseId)
+
+      if (currentImages) {
+        const imagesToDelete = currentImages
+          .filter(img => !existingImageIds.includes(img.id))
+          .map(img => img.id)
+
+        if (imagesToDelete.length > 0) {
+          await supabase
+            .from('warehouses_images')
+            .delete()
+            .in('id', imagesToDelete)
+        }
+      }
+    } else {
+      // If no existing images, delete all current images
+      await supabase
+        .from('warehouses_images')
+        .delete()
+        .eq('warehouse_id', warehouseId)
+    }
+
+    // Handle new image uploads
+    const imageFiles = formData.getAll('images') as File[]
+
+    if (imageFiles.length > 0) {
+      const uploadedUrls: string[] = []
+
+      for (let i = 0; i < imageFiles.length; i++) {
+        const file = imageFiles[i]
+
+        // Skip if not a valid image file
+        if (!file.type.startsWith('image/')) {
+          continue
+        }
+
+        // Generate unique filename with random component
+        const fileExt = file.name.split('.').pop()
+        const timestamp = Date.now()
+        const random = Math.random().toString(36).substring(2, 15)
+        const fileName = `${warehouseId}_${timestamp}_${random}_${i + 1}.${fileExt}`
+        const filePath = `warehoueses/${fileName}`
+
+        try {
+          // Upload file to Supabase Storage
+          const { data, error } = await supabase.storage
+            .from('warehoueses_images')
+            .upload(filePath, file, {
+              cacheControl: '3600',
+              upsert: false
+            })
+
+          if (error) {
+            continue
+          }
+
+          // Get public URL for the uploaded image
+          const { data: { publicUrl } } = supabase.storage
+            .from('warehoueses_images')
+            .getPublicUrl(filePath)
+
+          uploadedUrls.push(publicUrl)
+        } catch (error) {
+          continue
+        }
+      }
+
+      // Save new image URLs to warehouses_images table
+      if (uploadedUrls.length > 0) {
+        const imageRecords = uploadedUrls.map((imageUrl, index) => ({
+          warehouse_id: warehouseId,
+          image_path: imageUrl,
+        }))
+
+        const { error: imageInsertError } = await supabase
+          .from('warehouses_images')
+          .insert(imageRecords)
+
+        if (imageInsertError) {
+          return {
+            success: false,
+            message: 'Depo güncellendi ancak yeni görseller kaydedilemedi'
+          }
+        }
+      }
+    }
+
+    revalidatePath('/yonetim-paneli')
+    return {
+      success: true,
+      message: 'Depo başarıyla güncellendi'
+    }
+
+  } catch (error) {
+    return {
+      success: false,
+      message: 'Sunucu hatası. Lütfen daha sonra tekrar deneyin'
+    }
+  }
+}
+
 export async function addWarehouse(formData: FormData): Promise<ActionResult> {
   try {
     const supabase = await createClient()
