@@ -42,24 +42,15 @@ export default function WarehouseList({ warehouses }: WarehouseListProps) {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {warehouses.map(warehouse => (
         <Card key={warehouse.id} className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 pt-0 pb-6">
-          {warehouse.warehouses_images && warehouse.warehouses_images.length > 0 ? (
+          {warehouse.warehouses_images &&
             <Image
-              src={warehouse.warehouses_images[0].image_path}
+              src={warehouse.warehouses_images[0]?.image_path || '/'}
               alt={warehouse.title}
               width={1200}
               height={800}
               className="w-full h-48 object-cover"
-              
-            />
-          ) : (
-            <Image
-              src="https://placehold.co/1200x800/E2E8F0/94A3B8?text=Ana+Depo+Görseli"
-              alt={warehouse.title}
-              width={1200}
-              height={800}
-              className="w-full h-48 object-cover"
-            />
-          )}
+          />
+          }
           <CardHeader className="p-4">
             <div className="flex justify-between items-start">
               <CardTitle className="text-xl font-bold">{warehouse.title}</CardTitle>

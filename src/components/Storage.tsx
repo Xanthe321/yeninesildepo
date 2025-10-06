@@ -1,10 +1,9 @@
-"use client";
-
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { createClient } from "../../utils/supabase/server";
+import { getLatestWarehouses } from "@/lib/warehouse-actions";
 
 interface Warehouse {
   id: string
@@ -15,60 +14,20 @@ interface Warehouse {
   image_url?: string
   description?: string
   created_at: string
+  warehouses_images?: Array<{
+    id: string
+    warehouse_id: string
+    image_path: string
+  }>
 }
 
-export default function Storage() {
-    const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
-    const [loading, setLoading] = useState(true);
+export interface StoragePrompt {
+  warehouses?: Warehouse[]
+}
 
-    // Fetch warehouses from API
-    useEffect(() => {
-        const fetchWarehouses = async () => {
-            try {
-                const response = await fetch('/api/warehouses/latest');
-                if (response.ok) {
-                    const data = await response.json();
-                    setWarehouses(data.warehouses || []);
-                }
-            } catch (error) {
-                console.error('Error fetching warehouses:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+export default async function Storage() {
 
-        fetchWarehouses();
-    }, []);
-
-    // Fallback data if no warehouses in database
-    const defaultWarehouses = [
-        {
-            id: '1',
-            title: 'Küçük Boy Depo',
-            description: 'Birkaç koli, valiz veya küçük mobilyalar için idealdir.',
-            price: 500,
-            image_url: '/',
-            size: '5m²'
-        },
-        {
-            id: '2',
-            title: 'Orta Boy Depo',
-            description: '1+1 veya 2+1 daire eşyaları için uygundur.',
-            price: 800,
-            image_url: '/',
-            size: '10m²'
-        },
-        {
-            id: '3',
-            title: 'Büyük Boy Depo',
-            description: '3+1 daire eşyası veya ofis malzemeleri için geniş alan.',
-            price: 1200,
-            image_url: '/',
-            size: '20m²'
-        }
-    ];
-
-    const displayWarehouses = loading ? defaultWarehouses : (warehouses.length > 0 ? warehouses.slice(0, 3) : defaultWarehouses);
+    const warehouses = await getLatestWarehouses()
 
     return (
 			<section className="py-20 sm:py-24 bg-gray-50">
@@ -80,16 +39,26 @@ export default function Storage() {
             İhtiyaçlarınıza uygun depo boyutunu seçin ve hemen kiralama işlemine başlayın.
           </p>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-            {displayWarehouses.map((warehouse, index) => (
+            {warehouses.length === 0 ? (
+              <div className="col-span-1 md:col-span-3 text-center py-12">
+                <p className="text-gray-500 text-lg">Henüz depo bulunamadı.</p>
+              </div>
+            ) : (
+              warehouses.map((warehouse, index) => {
+                // Get first image from warehouses_images or fallback to image_url
+                const firstImage = warehouse.warehouses_images?.[0]?.image_path || warehouse.image_url || "/"
+
+                return (
               <Card key={warehouse.id} className="rounded-xl shadow-lg transition-transform transform hover:scale-105">
                 <CardHeader>
                   <div className="relative h-48 w-full rounded-t-xl overflow-hidden">
                     <Image
                       width={800}
                       height={800}
-                      src={warehouse.image_url || "/"}
+                      src={firstImage}
                       alt={`${warehouse.title} görseli`}
                       className="w-full h-full object-cover"
+                      unoptimized
                     />
                   </div>
                 </CardHeader>
@@ -113,7 +82,9 @@ export default function Storage() {
                   </Link>
                 </CardContent>
               </Card>
-            ))}
+                )
+              })
+            )}
           </div>
         </div>
       </section>
