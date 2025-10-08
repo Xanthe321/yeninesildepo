@@ -19,7 +19,7 @@ export default async function AdminDashboard() {
   const warehouses = await getWareHouses();
 
   return (
-    <div className="bg-gray-50 text-gray-900 font-sans leading-relaxed antialiased min-h-screen">
+    <div className="bg-gradient-to-b from-white to-blue-50 text-gray-900 font-sans leading-relaxed antialiased min-h-screen">
       {/* Main Content */}
       <main className="container mx-auto px-6 py-12">
         <div className="flex justify-between items-center mb-6">

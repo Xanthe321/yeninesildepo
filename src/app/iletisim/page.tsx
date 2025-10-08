@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 
 export default function Iletisim() {
   return (
-    <div className="bg-gray-50 text-gray-900 font-sans leading-relaxed antialiased min-h-screen">
+    <div className="bg-gradient-to-b from-white to-blue-50 text-gray-900 font-sans leading-relaxed antialiased min-h-screen">
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-16">
         <div className="container mx-auto px-6 text-center">

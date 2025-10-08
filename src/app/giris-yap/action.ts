@@ -33,7 +33,6 @@ export async function login(formData: FormData): Promise<ActionResult> {
       email,
       password,
     })
-    console.log(authError)
 
     if (authError) {
       // Handle specific auth errors

@@ -38,7 +38,7 @@ export default function WarehouseClient({ warehouses }: WarehouseClientProps) {
   );
 
   return (
-    <div>
+    <div className="bg-gradient-to-b from-white to-blue-50 min-h-screen">
       <main className="container mx-auto px-6 py-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900">Kiralık Depo Seçeneklerimiz</h1>

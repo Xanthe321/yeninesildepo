@@ -95,8 +95,6 @@ export default function ContactForm() {
       // Simulate API call - in production, this would send email
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      console.log('Contact form data:', data);
-
       setIsSubmitted(true);
       reset();
 

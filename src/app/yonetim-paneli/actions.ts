@@ -234,7 +234,6 @@ export async function updateWarehouse(formData: FormData): Promise<ActionResult>
       ? existingImages.map(img => JSON.parse(img).id)
       : []
 
-    console.log('Existing image IDs to keep:', existingImageIds)
 
     // Handle existing images - get all current images for this warehouse
     const { data: currentImages, error: fetchError } = await supabase
@@ -246,19 +245,14 @@ export async function updateWarehouse(formData: FormData): Promise<ActionResult>
       console.error('Error fetching current images:', fetchError)
     }
 
-    console.log('Current images in database:', currentImages)
 
     // Delete images that were removed from the warehouses_images table
     if (currentImages && currentImages.length > 0) {
       const imagesToDelete = currentImages.filter(img => !existingImageIds.includes(img.id))
 
-      console.log('Images to delete:', imagesToDelete)
-
       if (imagesToDelete.length > 0) {
         // First, delete from warehouses_images table
         const deleteIds = imagesToDelete.map(img => img.id)
-
-        console.log('Deleting image IDs from warehouses_images table:', deleteIds)
 
         const { error: deleteError } = await supabase
           .from('warehouses_images')
@@ -268,7 +262,6 @@ export async function updateWarehouse(formData: FormData): Promise<ActionResult>
         if (deleteError) {
           console.error('Error deleting from warehouses_images table:', deleteError)
         } else {
-          console.log('Successfully deleted from warehouses_images table')
         }
 
         // Then, delete the actual files from storage
@@ -285,7 +278,6 @@ export async function updateWarehouse(formData: FormData): Promise<ActionResult>
             }
 
             if (filePath) {
-              console.log('Deleting from storage:', filePath)
 
               const { error: storageError } = await supabase.storage
                 .from('warehoueses_images')
@@ -294,7 +286,6 @@ export async function updateWarehouse(formData: FormData): Promise<ActionResult>
               if (storageError) {
                 console.error('Storage deletion error:', storageError)
               } else {
-                console.log('Successfully deleted from storage:', filePath)
               }
             } else {
               console.error('Could not extract file path from:', img.image_path)
@@ -468,9 +459,7 @@ export async function addWarehouse(formData: FormData): Promise<ActionResult> {
         const timestamp = Date.now()
         const random = Math.random().toString(36).substring(2, 15)
         const fileName = `${warehouseId}_${timestamp}_${random}_${i + 1}.${fileExt}`
-        const filePath = `warehoueses/${fileName}`
-
-        console.log(filePath)
+        const filePath = `warehoueses_images/${fileName}`
 
         try {
           // Upload file to Supabase Storage

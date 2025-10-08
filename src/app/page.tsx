@@ -7,7 +7,7 @@ import Storage from "@/components/Storage";
 export default async function Home() {
 
   return (
-    <div className="bg-white text-gray-900 font-sans leading-relaxed antialiased">
+    <div className="bg-blue-50 text-gray-900 font-sans leading-relaxed antialiased">
       <HeroSection />
       <Services />
       <Storage />
