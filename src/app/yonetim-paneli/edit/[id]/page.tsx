@@ -32,7 +32,7 @@ export default async function EditWarehousePage({ params }: EditWarehousePagePro
         <div className="max-w-4xl mx-auto">
           <div className="mb-6">
             <h1 className="text-3xl font-bold">Depo Düzenle</h1>
-            <p className="text-gray-600 mt-2">"{warehouse.title}" deposunu düzenleyin</p>
+            <p className="text-gray-600 mt-2">&quot;{warehouse.title}&quot; deposunu düzenleyin</p>
           </div>
           <WarehouseEditForm warehouse={warehouse} />
         </div>
