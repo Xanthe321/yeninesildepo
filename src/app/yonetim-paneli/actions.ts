@@ -210,7 +210,7 @@ export async function updateWarehouse(formData: FormData): Promise<ActionResult>
     }
 
     // Update the warehouse
-    const { error: updateError } = await supabase
+    const {error: updateError } = await supabase
       .from('warehouses')
       .update({
         title,
@@ -228,36 +228,82 @@ export async function updateWarehouse(formData: FormData): Promise<ActionResult>
       }
     }
 
-    // Handle existing images
+    // Get the list of images that should be kept
     const existingImages = formData.getAll('existingImages') as string[]
-    const existingImageIds = existingImages.map(img => JSON.parse(img).id)
+    const existingImageIds = existingImages.length > 0
+      ? existingImages.map(img => JSON.parse(img).id)
+      : []
 
-    // Delete images that were removed
-    if (existingImageIds.length > 0) {
-      // First get all current images for this warehouse
-      const { data: currentImages } = await supabase
-        .from('warehouses_images')
-        .select('id')
-        .eq('warehouse_id', warehouseId)
+    console.log('Existing image IDs to keep:', existingImageIds)
 
-      if (currentImages) {
-        const imagesToDelete = currentImages
-          .filter(img => !existingImageIds.includes(img.id))
-          .map(img => img.id)
+    // Handle existing images - get all current images for this warehouse
+    const { data: currentImages, error: fetchError } = await supabase
+      .from('warehouses_images')
+      .select('id, image_path')
+      .eq('warehouse_id', warehouseId)
 
-        if (imagesToDelete.length > 0) {
-          await supabase
-            .from('warehouses_images')
-            .delete()
-            .in('id', imagesToDelete)
+    if (fetchError) {
+      console.error('Error fetching current images:', fetchError)
+    }
+
+    console.log('Current images in database:', currentImages)
+
+    // Delete images that were removed from the warehouses_images table
+    if (currentImages && currentImages.length > 0) {
+      const imagesToDelete = currentImages.filter(img => !existingImageIds.includes(img.id))
+
+      console.log('Images to delete:', imagesToDelete)
+
+      if (imagesToDelete.length > 0) {
+        // First, delete from warehouses_images table
+        const deleteIds = imagesToDelete.map(img => img.id)
+
+        console.log('Deleting image IDs from warehouses_images table:', deleteIds)
+
+        const { error: deleteError } = await supabase
+          .from('warehouses_images')
+          .delete()
+          .in('id', deleteIds)
+
+        if (deleteError) {
+          console.error('Error deleting from warehouses_images table:', deleteError)
+        } else {
+          console.log('Successfully deleted from warehouses_images table')
+        }
+
+        // Then, delete the actual files from storage
+        for (const img of imagesToDelete) {
+          try {
+            // Extract the file path from the public URL
+            // URL format: https://...supabase.co/storage/v1/object/public/warehoueses_images/path/to/file.jpg
+            let filePath = ''
+
+            if (img.image_path.includes('/warehoueses_images/')) {
+              filePath = img.image_path.split('/warehoueses_images/')[1]
+            } else if (img.image_path.includes('/warehoueses/')) {
+              filePath = img.image_path.split('/warehoueses/')[1]
+            }
+
+            if (filePath) {
+              console.log('Deleting from storage:', filePath)
+
+              const { error: storageError } = await supabase.storage
+                .from('warehoueses_images')
+                .remove([filePath])
+
+              if (storageError) {
+                console.error('Storage deletion error:', storageError)
+              } else {
+                console.log('Successfully deleted from storage:', filePath)
+              }
+            } else {
+              console.error('Could not extract file path from:', img.image_path)
+            }
+          } catch (error) {
+            console.error('Error deleting image from storage:', error)
+          }
         }
       }
-    } else {
-      // If no existing images, delete all current images
-      await supabase
-        .from('warehouses_images')
-        .delete()
-        .eq('warehouse_id', warehouseId)
     }
 
     // Handle new image uploads
@@ -279,7 +325,7 @@ export async function updateWarehouse(formData: FormData): Promise<ActionResult>
         const timestamp = Date.now()
         const random = Math.random().toString(36).substring(2, 15)
         const fileName = `${warehouseId}_${timestamp}_${random}_${i + 1}.${fileExt}`
-        const filePath = `warehoueses/${fileName}`
+        const filePath = `warehoueses_images/${fileName}`
 
         try {
           // Upload file to Supabase Storage
@@ -423,6 +469,8 @@ export async function addWarehouse(formData: FormData): Promise<ActionResult> {
         const random = Math.random().toString(36).substring(2, 15)
         const fileName = `${warehouseId}_${timestamp}_${random}_${i + 1}.${fileExt}`
         const filePath = `warehoueses/${fileName}`
+
+        console.log(filePath)
 
         try {
           // Upload file to Supabase Storage

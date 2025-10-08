@@ -1,4 +1,5 @@
 import ContactForm from './contact-form';
+import { Suspense } from 'react';
 
 export default function Iletisim() {
   return (
@@ -23,7 +24,9 @@ export default function Iletisim() {
 
             {/* Contact Form */}
             <div className="lg:col-span-2">
-              <ContactForm />
+              <Suspense fallback={<div className="bg-white rounded-lg shadow-sm border p-6">Yükleniyor...</div>}>
+                <ContactForm />
+              </Suspense>
             </div>
 
             {/* Contact Information */}
@@ -95,16 +98,6 @@ export default function Iletisim() {
                     <span className="font-medium text-red-600">Kapalı</span>
                   </div>
                 </div>
-              </div>
-
-              {/* Response Time Card */}
-              <div className="bg-blue-50 rounded-lg border border-blue-200 p-6">
-                <h3 className="text-lg font-semibold mb-2 text-blue-900">
-                  Hızlı Yanıt Garantisi
-                </h3>
-                <p className="text-blue-700 text-sm">
-                  Mesajınızı aldıktan sonra <strong>24 saat içinde</strong> size geri dönüş yapacağımızı garanti ediyoruz.
-                </p>
               </div>
             </div>
           </div>

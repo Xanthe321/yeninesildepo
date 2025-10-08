@@ -6,6 +6,7 @@ import { Separator } from "@radix-ui/react-separator";
 import { ChevronLeft, ChevronRight, MapPin, Package, Star } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface WarehouseImage {
   id: string;
@@ -168,7 +169,9 @@ export default function WarehouseDetail({ warehouse }: WarehouseDetailProps) {
                     <span>{warehouse.size}</span>
                   </div>
                 </div>
-                <Button className="w-full bg-blue-600 hover:bg-blue-700">Hemen Kirala</Button>
+                <Link href={`/iletisim?warehouse=${encodeURIComponent(warehouse.title)}`} className="block w-full">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 cursor-pointer">Hemen Kirala</Button>
+                </Link>
               </CardContent>
             </Card>
           </div>

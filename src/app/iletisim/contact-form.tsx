@@ -21,7 +21,8 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Send, CheckCircle, User, Mail, Phone, MessageSquare, Building } from "lucide-react";
 
 // Contact form validation schema
@@ -66,6 +67,8 @@ const subjects = [
 export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const searchParams = useSearchParams();
+  const warehouseName = searchParams.get('warehouse');
 
   const {
     register,
@@ -76,6 +79,14 @@ export default function ContactForm() {
   } = useForm<ContactInput>({
     resolver: zodResolver(contactSchema),
   });
+
+  // Pre-fill the message if warehouse name is provided
+  useEffect(() => {
+    if (warehouseName) {
+      setValue('subject', 'depo-kiralama');
+      setValue('message', `${warehouseName} deposu için form gönderiyorum. `);
+    }
+  }, [warehouseName, setValue]);
 
   const onSubmit = async (data: ContactInput) => {
     setIsSubmitting(true);
