@@ -91,8 +91,20 @@ export default function ContactForm() {
     setIsSubmitting(true);
 
     try {
-      // Simulate API call - in production, this would send email
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Call the API to send email
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Mesaj gönderilemedi');
+      }
 
       setIsSubmitted(true);
       reset();
@@ -104,6 +116,7 @@ export default function ContactForm() {
 
     } catch (error) {
       console.error('Contact form error:', error);
+      alert(error instanceof Error ? error.message : 'Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setIsSubmitting(false);
     }
