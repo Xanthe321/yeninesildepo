@@ -98,9 +98,9 @@ export function LoginForm({
                 >
                   Giriş Yap
                 </Button>
-                <Button variant="outline" className="w-full cursor-pointer">
+                {/* <Button variant="outline" className="w-full cursor-pointer">
                   Google ile giriş yap
-                </Button>
+                </Button> */}
               </div>
             </div>
             <div className="mt-4 text-center text-sm">

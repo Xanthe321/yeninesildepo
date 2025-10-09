@@ -128,9 +128,6 @@ export function SignupForm({
                 >
                   Üye Ol
                 </Button>
-                <Button variant="outline" className="w-full cursor-pointer">
-                  Google ile üye ol
-                </Button>
               </div>
             </div>
 
