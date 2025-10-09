@@ -79,7 +79,7 @@ export default function WarehouseList({ warehouses }: WarehouseListProps) {
             </p>
             <div className="mt-2 text-sm text-gray-500">
                 <p>
-                    <strong>Boyut:</strong> {warehouse.size || 'Boyut belirtilmemiş'}
+                    <strong>Boyut:</strong> {warehouse.size || 'Boyut belirtilmemiş'} m²
                 </p>
                 <p className="mt-1">
                     <strong>Fiyat:</strong> ₺{warehouse.price} / Ay

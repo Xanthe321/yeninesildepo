@@ -176,12 +176,17 @@ export default function WarehouseModal() {
               <Label htmlFor="size" className="text-right">
                 Boyut *
               </Label>
-              <Input
-                id="size"
-                placeholder="Örn: 100m² / 1000m³"
-                {...register("size")}
-                className={`col-span-3 ${errors.size ? "border-red-500" : ""}`}
-              />
+              <div className="col-span-3 relative">
+                <Input
+                  id="size"
+                  placeholder="Örn: 100m² / 1000m³"
+                  {...register("size")}
+                  className={`col-span-3 ${errors.size ? "border-red-500" : ""}`}
+                />
+                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">
+                  m²
+                </span>
+              </div>
               {errors.size && (
                 <p className="col-start-2 col-span-3 text-sm text-red-500 mt-1">{errors.size.message}</p>
               )}

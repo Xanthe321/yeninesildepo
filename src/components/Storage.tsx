@@ -60,7 +60,7 @@ export default async function Storage() {
                 const firstImage = warehouse.warehouses_images?.[0]?.image_path || warehouse.image_url || "/"
 
                 return (
-              <Card key={warehouse.id} className="group rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 border border-gray-100 overflow-hidden bg-white pb-6 px-0 py-0">
+              <Card key={warehouse.id} className="group rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 border border-gray-100 overflow-hidden bg-white pb-6 px-0 py-0 gap-0">
                 <CardHeader className="p-0">
                   <div className="relative h-56 w-full overflow-hidden">
                     <Image
@@ -74,7 +74,7 @@ export default async function Storage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   </div>
                 </CardHeader>
-                <CardContent className="p-6 text-left">
+                <CardContent className="p-6 text-left flex flex-col justify-between h-full">
                   <CardTitle className="text-xl lg:text-2xl font-bold text-gray-900">{warehouse.title}</CardTitle>
                   <p className="mt-3 text-gray-600 line-clamp-2 leading-relaxed">
                     {warehouse.description || 'Depo açıklaması mevcut değil.'}
@@ -86,7 +86,7 @@ export default async function Storage() {
                     </div>
                     {warehouse.size && (
                       <span className="text-sm bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg font-medium">
-                        {warehouse.size}
+                        {warehouse.size} m² 
                       </span>
                     )}
                   </div>
