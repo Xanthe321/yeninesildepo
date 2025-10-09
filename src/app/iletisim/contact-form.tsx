@@ -36,7 +36,6 @@ const contactSchema = z.object({
     .email({ message: 'Geçerli bir e-posta adresi giriniz' }),
   phone: z
     .string()
-    .optional()
     .refine((val) => !val || val.length >= 10, {
       message: 'Telefon numarası en az 10 karakter olmalıdır'
     }),
@@ -195,9 +194,10 @@ export default function ContactForm() {
               <div className="space-y-2">
                 <Label htmlFor="phone" className="flex items-center space-x-2">
                   <Phone className="h-4 w-4" />
-                  <span>Telefon</span>
+                  <span>Telefon *</span>
                 </Label>
                 <Input
+                  required
                   id="phone"
                   type="tel"
                   placeholder="05xx xxx xx xx"

@@ -40,12 +40,6 @@ export function AdminSigninForm({
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Şifre</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Şifrenizi mi unuttunuz?
-                  </a>
                 </div>
                 <Input id="password" name="password" type="password" required />
               </div>

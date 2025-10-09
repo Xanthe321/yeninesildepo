@@ -19,6 +19,7 @@ interface Warehouse {
   location?: string;
   size?: string;
   price: number;
+  description?: string;
   is_rented: boolean;
   warehouses_images?: WarehouseImage[];
 }
@@ -54,7 +55,7 @@ export default function WarehouseList({ warehouses }: WarehouseListProps) {
           }
           <CardHeader className="p-4">
             <div className="flex justify-between items-start">
-              <CardTitle className="text-xl font-bold">{warehouse.title}</CardTitle>
+              <CardTitle className="text-xl font-bold line-clamp-1">{warehouse.title}</CardTitle>
               <div className="flex items-center text-sm">
                 {warehouse.is_rented ? (
                   <div className="flex items-center text-red-500">
@@ -72,6 +73,9 @@ export default function WarehouseList({ warehouses }: WarehouseListProps) {
             <p className="flex items-center text-gray-600 mt-2">
               <MapPin className="h-4 w-4 mr-1 text-gray-400" />
               {warehouse.location || 'Konum belirtilmemiş'}
+            </p>
+            <p className="mt-3 text-gray-600 line-clamp-2 leading-relaxed">
+                {warehouse.description || 'Depo açıklaması mevcut değil.'}
             </p>
             <div className="mt-2 text-sm text-gray-500">
                 <p>

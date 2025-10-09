@@ -14,6 +14,8 @@ interface HeaderProps {
   user: UserData | null;
 }
 
+// TODO REVIEW THIS COMPONENT
+
 export default function Header({ user }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm">
@@ -21,7 +23,7 @@ export default function Header({ user }: HeaderProps) {
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
           <Package className="h-8 w-8 text-blue-600" />
-          <span className="text-2xl font-bold text-gray-900">Yeninesil Depolama</span>
+          <span className="text-2xl font-bold text-gray-900">Yeni Nesil Depolama</span>
         </Link>
 
         {/* Desktop Navigation */}
