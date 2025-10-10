@@ -75,12 +75,12 @@ export default function WarehouseClient({ warehouses }: WarehouseClientProps) {
                       className="w-full h-full object-cover"
                       unoptimized={warehouse.warehouses_images && warehouse.warehouses_images.length > 0}
                     />
-                    <div className="absolute top-4 right-4">
+                    {/* <div className="absolute top-4 right-4">
                       <Heart
                         className="h-8 w-8 text-white fill-gray-500/50 transition-colors hover:text-red-500 hover:fill-red-500 cursor-pointer"
                         strokeWidth={1.5}
                       />
-                    </div>
+                    </div> */}
                   </div>
                 </CardHeader>
                 <CardContent className="p-4">

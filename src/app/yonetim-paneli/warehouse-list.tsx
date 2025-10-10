@@ -87,7 +87,7 @@ export default function WarehouseList({ warehouses }: WarehouseListProps) {
             </div>
           </CardHeader>
           <CardContent className="p-4 flex justify-end space-x-2 border-t">
-            <Link href={`/yonetim-paneli/edit/${warehouse.id}`}>
+            <Link href={`/yonetim-paneli/düzenle/${warehouse.id}`}>
               <Button variant="outline" size="sm" className="cursor-pointer">
                 <Edit className="h-4 w-4 mr-1" />
                 Düzenle

@@ -40,19 +40,10 @@ export default function WarehouseDetail({ warehouse }: WarehouseDetailProps) {
     "https://placehold.co/1200x800/E2E8F0/94A3B8?text=Depo+Koridoru"
   ];
 
-  const defaultFeatures = [
-    "24/7 Kamera İzleme",
-    "İklim Kontrolü",
-    "Hırsız Alarm Sistemi",
-    "Yangın Söndürme Sistemi",
-    "Kolay Ulaşım İmkanı",
-    "Esnek Kiralama Süreleri"
-  ];
-
   const images = warehouse.warehouses_images && warehouse.warehouses_images.length > 0
     ? warehouse.warehouses_images.map(img => img.image_path)
     : defaultImages;
-  const features = warehouse.features && warehouse.features.length > 0 ? warehouse.features : defaultFeatures;
+
 
   const handlePrev = () => {
     setCurrentImageIndex((prevIndex) =>
@@ -142,15 +133,19 @@ export default function WarehouseDetail({ warehouse }: WarehouseDetailProps) {
                 {warehouse.description || "Bu depo, eşyalarınız için güvenli ve temiz bir saklama alanı sunar. Profesyonel depolama hizmetlerimizle eşyalarınızı güvenle emanet edebilirsiniz."}
               </p>
 
-              <h2 className="text-2xl font-bold mb-4">Özellikler</h2>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
-                {features.map((feature, index) => (
-                  <li key={index} className="flex items-center space-x-2">
-                    <Package className="h-5 w-5 text-blue-600" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
+              {warehouse.features &&
+                <>
+                <h2 className="text-2xl font-bold mb-4">Özellikler</h2>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
+                  {warehouse.features.map((feature, index) => (
+                    <li key={index} className="flex items-center space-x-2">
+                      <Package className="h-5 w-5 text-blue-600" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                </>
+              }
             </div>
 
             <Card className="p-6 h-fit rounded-xl shadow-lg">
