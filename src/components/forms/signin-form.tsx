@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { login } from "@/app/giris-yap/action"
 import { useFormState } from "react-dom"
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 const initialState = {
   success: false,
@@ -31,6 +33,14 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [state, formAction] = useFormState(loginAction, initialState)
+  const router = useRouter()
+
+  // Handle redirect when login is successful
+  useEffect(() => {
+    if (state?.success && state?.redirectTo) {
+      router.push(state.redirectTo)
+    }
+  }, [state?.success, state?.redirectTo, router])
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

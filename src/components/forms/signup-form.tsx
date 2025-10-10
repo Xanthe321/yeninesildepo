@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { signUp } from "@/app/uye-ol/action"
 import { useFormState } from "react-dom"
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 const initialState = {
   success: false,
@@ -31,6 +33,14 @@ export function SignupForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [state, formAction] = useFormState(signUpAction, initialState)
+  const router = useRouter()
+
+  // Handle redirect when signup is successful
+  useEffect(() => {
+    if (state?.success && state?.redirectTo) {
+      router.push(state.redirectTo)
+    }
+  }, [state?.success, state?.redirectTo, router])
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

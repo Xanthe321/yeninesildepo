@@ -40,6 +40,7 @@ export async function signUp(formData: FormData): Promise<ActionResult> {
     })
 
     if (authError) {
+      await supabase.auth.signOut()
       if (authError.message.includes('already registered')) {
         return {
           success: false,

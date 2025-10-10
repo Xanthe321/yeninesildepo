@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '../../../utils/supabase/server'
-import { loginSchema, signupSchema, parseFormData } from '@/lib/validations'
+import { loginSchema, parseFormData } from '@/lib/validations'
 
 type ActionResult = {
   success: boolean
