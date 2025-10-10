@@ -1,8 +1,8 @@
-import { Package } from "lucide-react";
 import { Button } from "./ui/button";
 import UserDropdown from "./user-dropdown";
 import Link from "next/link";
 import MobileMenu from "./MobileMenu";
+import Image from "next/image";
 
 interface UserData {
   id: string;
@@ -21,9 +21,15 @@ export default function Header({ user }: HeaderProps) {
     <header className="sticky top-0 z-50 bg-white shadow-sm">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-          <Package className="h-8 w-8 text-blue-600" />
-          <span className="text-2xl font-bold text-gray-900">Yeni Nesil Depolama</span>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/logo.png"
+            alt="Yeni Nesil Depolama"
+            width={240}
+            height={80}
+            className="h-16 w-auto"
+            priority
+          />
         </Link>
 
         {/* Desktop Navigation */}

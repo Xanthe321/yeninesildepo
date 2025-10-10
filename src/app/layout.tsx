@@ -18,6 +18,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Yeni Nesil Depolama",
   description: "En uygun fiyatlarla depoları kiralayın",
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 interface UserData {
