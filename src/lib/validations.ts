@@ -67,6 +67,9 @@ export const warehouseSchema = z.object({
   description: z
     .string()
     .max(500, { message: 'Açıklama en fazla 500 karakter olabilir' })
+    .optional(),
+  features: z
+    .string()
     .optional()
 })
 

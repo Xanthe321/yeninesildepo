@@ -192,6 +192,8 @@ export async function updateWarehouse(formData: FormData): Promise<ActionResult>
     const size = formData.get('size') as string
     const price = parseFloat(formData.get('price') as string)
     const description = formData.get('description') as string
+    const featuresJson = formData.get('features') as string
+    const features = featuresJson ? JSON.parse(featuresJson) : null
 
     // Validate input with Zod
     const validation = warehouseSchema.safeParse({
@@ -219,6 +221,7 @@ export async function updateWarehouse(formData: FormData): Promise<ActionResult>
         size,
         price,
         description,
+        features,
       })
       .eq('id', warehouseId)
 
@@ -426,6 +429,10 @@ export async function addWarehouse(formData: FormData): Promise<ActionResult> {
 
     const { title, location, size, price, description } = validation.data
 
+    // Extract features from formData
+    const featuresJson = formData.get('features') as string
+    const features = featuresJson ? JSON.parse(featuresJson) : null
+
     // Extract image files
     const imageFiles = formData.getAll('images') as File[]
 
@@ -438,6 +445,7 @@ export async function addWarehouse(formData: FormData): Promise<ActionResult> {
         size,
         price,
         description,
+        features,
       }])
       .select('id')
       .single()

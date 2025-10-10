@@ -29,6 +29,7 @@ interface Warehouse {
   size?: string;
   price: number;
   description?: string;
+  features?: string[];
   is_rented: boolean;
   warehouses_images?: WarehouseImage[];
 }
@@ -61,6 +62,7 @@ export default function WarehouseEditForm({ warehouse }: WarehouseEditFormProps)
       size: warehouse.size || '',
       price: warehouse.price,
       description: warehouse.description || '',
+      features: warehouse.features?.join(', ') || '',
     }
   });
 
@@ -121,6 +123,15 @@ export default function WarehouseEditForm({ warehouse }: WarehouseEditFormProps)
       formData.append('price', data.price.toString());
       if (data.description) {
         formData.append('description', data.description);
+      }
+
+      // Convert comma-separated features to array
+      if (data.features) {
+        const featuresArray = data.features
+          .split(',')
+          .map(f => f.trim())
+          .filter(f => f.length > 0);
+        formData.append('features', JSON.stringify(featuresArray));
       }
 
       // Add existing images that weren't removed
@@ -263,6 +274,20 @@ export default function WarehouseEditForm({ warehouse }: WarehouseEditFormProps)
                 />
                 {errors.description && (
                   <p className="text-sm text-red-500 mt-1">{errors.description.message}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="features">Özellikler</Label>
+                <Textarea
+                  id="features"
+                  placeholder="Virgülle ayırarak özellikler girin (örn: 7/24 Güvenlik, Klimalı, Kameralı)"
+                  {...register("features")}
+                  className={`mt-1 ${errors.features ? "border-red-500" : ""}`}
+                  rows={3}
+                />
+                {errors.features && (
+                  <p className="text-sm text-red-500 mt-1">{errors.features.message}</p>
                 )}
               </div>
             </div>

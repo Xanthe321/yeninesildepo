@@ -107,6 +107,15 @@ export default function WarehouseModal() {
         formData.append('description', data.description);
       }
 
+      // Convert comma-separated features to array
+      if (data.features) {
+        const featuresArray = data.features
+          .split(',')
+          .map(f => f.trim())
+          .filter(f => f.length > 0);
+        formData.append('features', JSON.stringify(featuresArray));
+      }
+
       selectedImages.forEach((image) => {
         formData.append(`images`, image);
       });
@@ -247,6 +256,22 @@ export default function WarehouseModal() {
               />
               {errors.description && (
                 <p className="col-start-2 col-span-3 text-sm text-red-500 mt-1">{errors.description.message}</p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-4 items-start gap-4">
+              <Label htmlFor="features" className="text-right pt-2">
+                Özellikler
+              </Label>
+              <Textarea
+                id="features"
+                placeholder="Virgülle ayırarak özellikler girin (örn: 7/24 Güvenlik, Klimalı, Kameralı)"
+                {...register("features")}
+                className={`col-span-3 ${errors.features ? "border-red-500" : ""}`}
+                rows={2}
+              />
+              {errors.features && (
+                <p className="col-start-2 col-span-3 text-sm text-red-500 mt-1">{errors.features.message}</p>
               )}
             </div>
 
