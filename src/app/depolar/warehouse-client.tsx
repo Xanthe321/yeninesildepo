@@ -101,7 +101,7 @@ export default function WarehouseClient({ warehouses }: WarehouseClientProps) {
                     {warehouse.location || 'Konum belirtilmemiş'}
                   </div>
                   <div className="mt-2 text-sm text-gray-500">
-                    <span className="font-semibold text-gray-700">{warehouse.size || 'Boyut belirtilmemiş'}</span>
+                    <span className="font-semibold text-gray-700">{warehouse.size || 'Boyut belirtilmemiş'}</span> m²
                   </div>
                   <div className="flex justify-between items-center mt-4">
                     <span className="text-md text-gray-700">

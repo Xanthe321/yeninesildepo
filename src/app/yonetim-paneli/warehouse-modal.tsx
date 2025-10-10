@@ -13,17 +13,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { PlusCircle, Upload, X, Image as ImageIcon } from "lucide-react";
+import { PlusCircle, Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
 import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { warehouseSchema, type WarehouseInput } from "@/lib/validations";
 import { addWarehouse } from './actions';
 import Image from "next/image";
+import { compressImages } from "@/lib/client-image-compression";
 
 export default function WarehouseModal() {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCompressing, setIsCompressing] = useState(false);
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -39,16 +41,35 @@ export default function WarehouseModal() {
     resolver: zodResolver(warehouseSchema),
   });
 
-  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     if (files.length === 0) return;
 
-    const newImages = [...selectedImages, ...files];
-    setSelectedImages(newImages);
+    setIsCompressing(true);
 
-    // Create preview URLs
-    const newPreviews = files.map(file => URL.createObjectURL(file));
-    setImagePreviews(prev => [...prev, ...newPreviews]);
+    try {
+      // Compress images on client-side before adding to state
+      const compressedFiles = await compressImages(files, {
+        maxSizeMB: 2,
+        maxWidthOrHeight: 1920,
+      });
+
+      const newImages = [...selectedImages, ...compressedFiles];
+      setSelectedImages(newImages);
+
+      // Create preview URLs
+      const newPreviews = compressedFiles.map(file => URL.createObjectURL(file));
+      setImagePreviews(prev => [...prev, ...newPreviews]);
+    } catch (error) {
+      console.error('Image compression error:', error);
+      // Fallback: use original files if compression fails
+      const newImages = [...selectedImages, ...files];
+      setSelectedImages(newImages);
+      const newPreviews = files.map(file => URL.createObjectURL(file));
+      setImagePreviews(prev => [...prev, ...newPreviews]);
+    } finally {
+      setIsCompressing(false);
+    }
   };
 
   const removeImage = (index: number) => {
@@ -237,16 +258,34 @@ export default function WarehouseModal() {
               <div className="col-span-3 space-y-4">
                 {/* Upload Button */}
                 <div
-                  className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors cursor-pointer"
-                  onClick={() => fileInputRef.current?.click()}
+                  className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                    isCompressing
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-300 hover:border-gray-400 cursor-pointer'
+                  }`}
+                  onClick={() => !isCompressing && fileInputRef.current?.click()}
                 >
-                  <Upload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
-                  <p className="text-sm text-gray-600 mb-1">
-                    Depo görsellerini yüklemek için tıklayın
-                  </p>
-                  <p className="text-xs text-gray-400">
-                    PNG, JPG, JPEG formatları desteklenir
-                  </p>
+                  {isCompressing ? (
+                    <>
+                      <Loader2 className="mx-auto h-8 w-8 text-blue-600 mb-2 animate-spin" />
+                      <p className="text-sm text-blue-700 mb-1">
+                        Görseller optimize ediliyor...
+                      </p>
+                      <p className="text-xs text-blue-600">
+                        Lütfen bekleyin
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
+                      <p className="text-sm text-gray-600 mb-1">
+                        Depo görsellerini yüklemek için tıklayın
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        PNG, JPG, JPEG - Otomatik optimize edilecek
+                      </p>
+                    </>
+                  )}
                 </div>
 
                 <input

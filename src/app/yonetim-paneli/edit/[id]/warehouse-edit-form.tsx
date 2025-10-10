@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, X, Image as ImageIcon, Save, ArrowLeft } from "lucide-react";
+import { Upload, X, Image as ImageIcon, Save, ArrowLeft, Loader2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,7 @@ import { updateWarehouse } from '../../actions';
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { compressImages } from "@/lib/client-image-compression";
 
 interface WarehouseImage {
   id: string;
@@ -39,6 +40,7 @@ interface WarehouseEditFormProps {
 export default function WarehouseEditForm({ warehouse }: WarehouseEditFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isCompressing, setIsCompressing] = useState(false);
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [existingImages, setExistingImages] = useState<WarehouseImage[]>(warehouse.warehouses_images || []);
@@ -62,16 +64,35 @@ export default function WarehouseEditForm({ warehouse }: WarehouseEditFormProps)
     }
   });
 
-  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     if (files.length === 0) return;
 
-    const newImages = [...selectedImages, ...files];
-    setSelectedImages(newImages);
+    setIsCompressing(true);
 
-    // Create preview URLs
-    const newPreviews = files.map(file => URL.createObjectURL(file));
-    setImagePreviews(prev => [...prev, ...newPreviews]);
+    try {
+      // Compress images on client-side before adding to state
+      const compressedFiles = await compressImages(files, {
+        maxSizeMB: 2,
+        maxWidthOrHeight: 1920,
+      });
+
+      const newImages = [...selectedImages, ...compressedFiles];
+      setSelectedImages(newImages);
+
+      // Create preview URLs
+      const newPreviews = compressedFiles.map(file => URL.createObjectURL(file));
+      setImagePreviews(prev => [...prev, ...newPreviews]);
+    } catch (error) {
+      console.error('Image compression error:', error);
+      // Fallback: use original files if compression fails
+      const newImages = [...selectedImages, ...files];
+      setSelectedImages(newImages);
+      const newPreviews = files.map(file => URL.createObjectURL(file));
+      setImagePreviews(prev => [...prev, ...newPreviews]);
+    } finally {
+      setIsCompressing(false);
+    }
   };
 
   const removeNewImage = (index: number) => {

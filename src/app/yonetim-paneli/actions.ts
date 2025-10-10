@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '../../../utils/supabase/server'
 import { warehouseSchema, parseFormData, formatZodError } from '@/lib/validations'
+import { optimizeImageFull, getOptimizedExtension } from '@/lib/image-optimization'
 
 type ActionResult = {
   success: boolean
@@ -311,20 +312,28 @@ export async function updateWarehouse(formData: FormData): Promise<ActionResult>
           continue
         }
 
-        // Generate unique filename with random component
-        const fileExt = file.name.split('.').pop()
-        const timestamp = Date.now()
-        const random = Math.random().toString(36).substring(2, 15)
-        const fileName = `${warehouseId}_${timestamp}_${random}_${i + 1}.${fileExt}`
-        const filePath = `warehoueses_images/${fileName}`
-
         try {
-          // Upload file to Supabase Storage
+          // Convert File to Buffer for optimization
+          const arrayBuffer = await file.arrayBuffer()
+          const buffer = Buffer.from(arrayBuffer)
+
+          // Optimize image
+          const optimizedBuffer = await optimizeImageFull(buffer)
+
+          // Generate unique filename with optimized extension
+          const timestamp = Date.now()
+          const random = Math.random().toString(36).substring(2, 15)
+          const optimizedName = getOptimizedExtension(file.name, 'webp')
+          const fileName = `${warehouseId}_${timestamp}_${random}_${i + 1}_${optimizedName}`
+          const filePath = `warehoueses_images/${fileName}`
+
+          // Upload optimized file to Supabase Storage
           const { data, error } = await supabase.storage
             .from('warehoueses_images')
-            .upload(filePath, file, {
+            .upload(filePath, optimizedBuffer, {
               cacheControl: '3600',
-              upsert: false
+              upsert: false,
+              contentType: 'image/webp'
             })
 
           if (error) {
@@ -454,20 +463,28 @@ export async function addWarehouse(formData: FormData): Promise<ActionResult> {
           continue
         }
 
-        // Generate unique filename with random component
-        const fileExt = file.name.split('.').pop()
-        const timestamp = Date.now()
-        const random = Math.random().toString(36).substring(2, 15)
-        const fileName = `${warehouseId}_${timestamp}_${random}_${i + 1}.${fileExt}`
-        const filePath = `warehoueses_images/${fileName}`
-
         try {
-          // Upload file to Supabase Storage
+          // Convert File to Buffer for optimization
+          const arrayBuffer = await file.arrayBuffer()
+          const buffer = Buffer.from(arrayBuffer)
+
+          // Optimize image
+          const optimizedBuffer = await optimizeImageFull(buffer)
+
+          // Generate unique filename with optimized extension
+          const timestamp = Date.now()
+          const random = Math.random().toString(36).substring(2, 15)
+          const optimizedName = getOptimizedExtension(file.name, 'webp')
+          const fileName = `${warehouseId}_${timestamp}_${random}_${i + 1}_${optimizedName}`
+          const filePath = `warehoueses_images/${fileName}`
+
+          // Upload optimized file to Supabase Storage
           const { data, error } = await supabase.storage
             .from('warehoueses_images')
-            .upload(filePath, file, {
+            .upload(filePath, optimizedBuffer, {
               cacheControl: '3600',
-              upsert: false
+              upsert: false,
+              contentType: 'image/webp'
             })
 
           if (error) {
