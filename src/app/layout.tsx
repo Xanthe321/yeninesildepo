@@ -29,29 +29,29 @@ interface UserData {
   role?: string;
 }
 
-async function getUser(): Promise<UserData | null> {
-  try {
-    const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+// async function getUser(): Promise<UserData | null> {
+//   try {
+//     const supabase = await createClient();
+//     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
-    if (authError || !user) return null;
+//     if (authError || !user) return null;
 
-    // Get user role
-    const { data: userRole } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', user.id)
-      .single()
+//     // Get user role
+//     const { data: userRole } = await supabase
+//       .from('user_roles')
+//       .select('role')
+//       .eq('user_id', user.id)
+//       .single()
 
-    return {
-      id: user.id,
-      email: user.email || '',
-      role: userRole?.role
-    } as UserData;
-  } catch (error) {
-    return null;
-  }
-}
+//     return {
+//       id: user.id,
+//       email: user.email || '',
+//       role: userRole?.role
+//     } as UserData;
+//   } catch (error) {
+//     return null;
+//   }
+// }
 
 export default async function RootLayout({
   children,
@@ -59,16 +59,16 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  const user = await getUser();
+  // const user = await getUser();
 
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header user={user} />
+        {/* <Header user={user} /> */}
         {children}
-        <Footer />
+        {/* <Footer /> */}
       </body>
     </html>
   );

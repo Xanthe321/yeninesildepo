@@ -14,7 +14,7 @@ export default async function Home() {
       <HowToWork />
       <CTA /> */}
       <div className="flex items-center justify-center h-screen text-2xl font-bold">
-        Gecici Olarak Hizmet Verememkteyiz.
+        Gecici Olarak Hizmet Verememekteyiz.
       </div>
     </div>
   );
