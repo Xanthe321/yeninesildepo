@@ -1,6 +1,6 @@
 "use client";
 
-import { User, Settings, Shield, LogOut } from "lucide-react";
+import { User, Settings, Shield, LogOut, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -59,12 +59,20 @@ export default function UserDropdown({ user }: UserDropdownProps) {
         <DropdownMenuSeparator />
 
         {user.role === 'user' && (
-          <DropdownMenuItem asChild>
-            <Link href="/profil" className="cursor-pointer flex items-center">
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Profil</span>
-            </Link>
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuItem asChild>
+              <Link href="/depolarim" className="cursor-pointer flex items-center">
+                <Package className="mr-2 h-4 w-4" />
+                <span>Depolarım</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/profil" className="cursor-pointer flex items-center">
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Profil</span>
+              </Link>
+            </DropdownMenuItem>
+          </>
         )}
 
         {user.role === 'admin' && (
