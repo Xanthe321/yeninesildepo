@@ -1,5 +1,5 @@
 import { LoginForm } from "@/components/forms/signin-form";
-import Header from "@/components/Header";
+
 
 export default function Giris() {
   return(

@@ -8,14 +8,11 @@ export default async function Home() {
 
   return (
     <div className="bg-blue-50 text-gray-900 font-sans leading-relaxed antialiased">
-      {/* <HeroSection />
+      <HeroSection />
       <Services />
       <Storage />
       <HowToWork />
-      <CTA /> */}
-      <div className="flex items-center justify-center h-screen text-2xl font-bold">
-        Gecici Olarak Hizmet Verememekteyiz.
-      </div>
+      <CTA />
     </div>
   );
 }
