@@ -4,9 +4,6 @@ import { updateSession } from './utils/supabase/middleware'
 
 export async function middleware(request: NextRequest) {
   // Only allow access to the home page
-  if (request.nextUrl.pathname !== '/') {
-    return NextResponse.redirect(new URL('/', request.url))
-  }
 
   // update user's auth session
   return await updateSession(request)
